@@ -13,6 +13,7 @@ import (
 	"regexp"
 	"strings"
 )
+
 var upStreamProxy string
 
 func main() {
@@ -69,22 +70,24 @@ func dialOut(ctx context.Context, network, addr string) (net.Conn, error) {
 	conChan := make(chan net.Conn)
 	errChan := make(chan error)
 	go func() {
-		dialer , err :=	proxy.SOCKS5(network,upStreamProxy,nil,proxy.Direct)
+		dialer, err := socks.Dial(network, upStreamProxy)
 		if err != nil {
 			errChan <- err
+			return
 		}
-		conn,err := dialer.Dial(network,addr)
+		conn, err := dialer.Dial(network, addr)
 		if err != nil {
 			errChan <- err
+			return
 		}
 		conChan <- conn
 	}()
 	select {
-	case err := <- errChan :
+	case err := <-errChan:
 		return nil, err
-	case conChan := <- conChan:
-		return conChan,nil
-	case <- ctx.Done():
-		return nil,ctx.Err()
+	case conChan := <-conChan:
+		return conChan, nil
+	case <-ctx.Done():
+		return nil, ctx.Err()
 	}
 }
