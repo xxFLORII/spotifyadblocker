@@ -16,7 +16,12 @@ jobs:
         uses: actions/setup-go@v2
         with:
           go-version: 1.17
-          
+
+      - name: Set up SOCKS5 proxy
+        run: |
+          echo 'export http_proxy="socks5://<your_socks5_proxy_address>:<your_socks5_proxy_port>"' >> $GITHUB_ENV
+          echo 'export https_proxy="socks5://<your_socks5_proxy_address>:<your_socks5_proxy_port>"' >> $GITHUB_ENV
+
       - name: Print go tool dist list
         run: go tool dist list
 
@@ -32,6 +37,7 @@ jobs:
             fi
             GOOS=$os GOARCH=$arch CGO_ENABLED=0 go build -o dist/$filename
           done
+
       - name: Upload build-artifacts
         uses: skx/github-action-publish-binaries@master
         env:
