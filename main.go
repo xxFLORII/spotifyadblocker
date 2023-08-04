@@ -1,17 +1,16 @@
 package main
 
 import (
-	"context"
-	"fmt"
-	"net"
-	"os"
-	"regexp"
+    "context"
+    "fmt"
+    "net"
+    "os"
+    "regexp"
 
-	"github.com/DavidGamba/go-getoptions"
-	"github.com/things-go/go-socks5"
-	"golang.org/x/net/proxy"
-	"io/ioutil"
-	"strings"
+    "github.com/DavidGamba/go-getoptions"
+    "github.com/things-go/go-socks5" // Hinzugefügter Import für go-socks5
+    "io/ioutil"
+    "strings"
 )
 
 var upStreamProxy string
