@@ -3,14 +3,14 @@ package main
 import (
 	"context"
 	"fmt"
+	"net"
+	"os"
+	"regexp"
+
 	"github.com/DavidGamba/go-getoptions"
 	"github.com/things-go/go-socks5"
 	"golang.org/x/net/proxy"
 	"io/ioutil"
-	"log"
-	"net"
-	"os"
-	"regexp"
 	"strings"
 )
 
