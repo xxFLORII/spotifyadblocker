@@ -67,27 +67,21 @@ func main() {
 	}
 }
 func dialOut(ctx context.Context, network, addr string) (net.Conn, error) {
-    conChan := make(chan net.Conn)
-    errChan := make(chan error)
-    go func() {
-        dialer, err := socks5.NewDialer()
-        if err != nil {
-            errChan <- err
-            return
-        }
-        conn, err := dialer.DialContext(ctx, network, addr)
-        if err != nil {
-            errChan <- err
-            return
-        }
-        conChan <- conn
-    }()
-    select {
-    case err := <-errChan:
-        return nil, err
-    case conChan := <-conChan:
-        return conChan, nil
-    case <-ctx.Done():
-        return nil, ctx.Err()
+    dialer := &net.Dialer{
+        Timeout:   30 * time.Second,
+        KeepAlive: 30 * time.Second,
+        DualStack: true,
+        Resolver: &net.Resolver{
+            PreferGo: true,
+            Dial: func(ctx context.Context, network, address string) (net.Conn, error) {
+                return socks5.Dial(network, upStreamProxy, address)
+            },
+        },
     }
+
+    conn, err := dialer.DialContext(ctx, network, addr)
+    if err != nil {
+        return nil, err
+    }
+    return conn, nil
 }
