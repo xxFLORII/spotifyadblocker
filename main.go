@@ -70,12 +70,12 @@ func dialOut(ctx context.Context, network, addr string) (net.Conn, error) {
     conChan := make(chan net.Conn)
     errChan := make(chan error)
     go func() {
-        dialer, err := socks5.Dial(network, upStreamProxy)
+        dialer, err := socks5.NewDialer()
         if err != nil {
             errChan <- err
             return
         }
-        conn, err := dialer.Dial(network, addr)
+        conn, err := dialer.DialContext(ctx, network, addr)
         if err != nil {
             errChan <- err
             return
