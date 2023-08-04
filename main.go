@@ -3,12 +3,13 @@ package main
 import (
     "context"
     "fmt"
+    "log"
     "net"
     "os"
     "regexp"
 
     "github.com/DavidGamba/go-getoptions"
-    "github.com/things-go/go-socks5" // Hinzugefügter Import für go-socks5
+    "github.com/things-go/go-socks5"
     "io/ioutil"
     "strings"
 )
